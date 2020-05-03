@@ -23,7 +23,7 @@
             <b-nav-item v-for="(item, index) in navdata" :key="index" @click="tabget(item.id, item.search,item.routername)">{{ item.name }}数据</b-nav-item>
           </b-navbar-nav>
           <!-- Right aligned nav items -->
-          <b-navbar-nav class="ml-auto">
+          <b-navbar-nav class="ml-auto" v-show="searcgshow">
             <b-nav-form>
               <b-form-input size="sm" class="mr-sm-2" :placeholder="'搜索' + seacon" v-model='search'></b-form-input>
               <b-button size="sm" class="my-2 my-sm-0" @click='onsearch'>搜索</b-button>
@@ -35,20 +35,36 @@
     <!-- -=== =↑↑↑↑↑  PC和手机端的顶部栏============================== -->
     <!-- -======↓↓↓↓↓ 手机端的 显示组件================================= -->
     <div class="d-block d-md-none">
-    <van-notice-bar mode="closeable" class="NoticeBar" background="#ecf9ff" >
+		
+		<van-search
+		  v-model="search"
+		  show-action
+		  v-show="searcgshow"
+		  :placeholder="'搜索' + seacon"
+		  @search="onsearch"
+		  class="msearch"
+		>
+		  <template #action>
+		    <div @click="onsearch">搜索</div>
+		  </template>
+		</van-search>
+		
+    <van-notice-bar mode="closeable" class="NoticeBar" background="#ecf9ff"  v-show="!searcgshow">
       通知内容通知内容通知内容通知内容通知内容通知内容通知内容通知内容通知内容通知内容通知内容通知内容通知内容
     </van-notice-bar>
 
 
-
+	 <b-modal v-model="modalShow" class="modal">
+		 <b-table striped hover :items="citydata"></b-table>
+	 </b-modal>
     <!-- ----------------------------------------------------底部栏 -->
 
       <van-tabbar v-model="active" class="nav">
-        <van-tabbar-item icon="cluster-o" to="/world">全球数据</van-tabbar-item>
-        <van-tabbar-item icon="bar-chart-o" to="/china">全国数据</van-tabbar-item>
-        <van-tabbar-item icon="location-o" to="/province">省份数据</van-tabbar-item>
-        <van-tabbar-item icon="newspaper-o" to="/news">疫情新闻</van-tabbar-item>
-        <van-tabbar-item icon="more-o" to="/other">更多资讯</van-tabbar-item>
+        <van-tabbar-item icon="cluster-o" to="/"  @click="tabget(active, navdata[active].search,navdata[active].routername)">全球数据</van-tabbar-item>
+        <van-tabbar-item icon="bar-chart-o" to="/china" @click="tabget(active, navdata[active].search,navdata[active].routername)">全国数据</van-tabbar-item>
+        <van-tabbar-item icon="location-o" to="/province" @click="tabget(active, navdata[active].search,navdata[active].routername)">省份数据</van-tabbar-item>
+        <van-tabbar-item icon="newspaper-o" to="/news"  @click="tabget(active, navdata[active].search,navdata[active].routername)">疫情新闻</van-tabbar-item>
+        <van-tabbar-item icon="more-o" to="/other"  @click="tabget(active, navdata[active].search,navdata[active].routername)">更多资讯</van-tabbar-item>
       </van-tabbar>
     </div>
     <!-- ---------------------------------------------------------------------------- -->
@@ -99,7 +115,10 @@ export default {
       show:true,
       rounames:'',
       search:'',
-      searchindex:''
+      searchindex:'',
+	  searcgshow:false,
+	  modalShow:false,
+	  citydata:[{}]
     };
   },
   created() {
@@ -110,11 +129,16 @@ export default {
       this.isHovered = hovered;
     },
     tabget(i, n,rou) {
-      console.log(i);
+		
+      // console.log(i);
       this.searchindex=i
-      if (i >= 1) {
+      if (i >= 1&&i<3) {
+		  this.searcgshow=true
         this.seacon = n;
-      }
+      }else{
+		  this.searcgshow=false
+	  }
+	  console.log(this.searcgshow)
       if(this.rounames==rou){
         return
       }
@@ -131,6 +155,8 @@ export default {
     //     myChart.setOption(mapdata, true);
     // }
     onsearch(){
+		this.active=this.searchindex
+		console.log(this.searchindex)
       if(this.searchindex==1){
         let data=this.search
         if(this.search.charAt(this.search.length-1)=='省'){
@@ -138,10 +164,42 @@ export default {
         }
 
         let ping=py.chineseToPinYin(data)
-        console.log(ping)
+        
+				this.$router.push({
+					name:'Province',
+					query:{
+						name:ping,
+						chname:data
+					}
+				})
 
         return
       }
+	   if(this.active==2){
+		   
+		  let data=window.citydatas.cities
+		  // console.log(data)
+		  let se=this.search
+		  if(this.search.charAt(this.search.length-1)=='市'){
+			  se=this.search.substr(0,this.search.length-1)
+		  }
+		  console.log(se)
+		  for(let i=0;i<data.length;i++){
+		  	// console.log(data[i])
+		  	if(data[i].cityName==se){
+		  		console.log(data[i])
+				this.citydata[0].累计确诊=data[i].confirmedCount
+				this.citydata[0].已治愈==data[i].curedCount
+				this.citydata[0].当前确诊计数=data[i].currentConfirmedCount
+				this.citydata[0].死亡=data[i].deadCount
+		  	}
+		  }
+		  // console.log(yhis.citydata)
+		  this.modalShow=true
+	  }
+	  
+	 
+	  
     },
     getprodata(){
 
@@ -168,5 +226,24 @@ export default {
   height: 2.5rem;
 font-size: 0.67rem;color: #1989fa;
 }
-// .NoticeBar>d
+.msearch{
+	height: 2rem;
+	font-size: 1rem;
+}
+/deep/.van-cell .van-cell--borderless .van-field{
+	height: 2rem;
+}
+/deep/.van-field__control{
+	height: 2rem;
+}
+/deep/.van-field__left-icon{
+	line-height: 2rem;
+}
+.modal{
+	width: 4rem;
+}
+/deep/.modal-dialog{
+	max-width: 34rem;
+}
+
 </style>

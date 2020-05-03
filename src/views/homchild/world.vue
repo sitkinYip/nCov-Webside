@@ -77,7 +77,7 @@
               // console.log(WorldData)
               mapdata.options[0].series.data=WorldData
                this.mapEchartsInit();
-               console.log(res)
+               // console.log(res)
           }
         });
       },

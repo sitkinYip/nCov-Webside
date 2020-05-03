@@ -21,16 +21,35 @@
           </div>
         </b-sidebar>
       </div>
-
+	  
+	  
+	
     </div>
 </template>
 
 <script>
   import echarts from "echarts";
-  import 'echarts/map/js/province/guangdong.js';
+  
   import mapdata from '@/untlis/map-PrvinceOption.js';
+  // import 'echarts/map/js/province/guangdong.js'
 
   export default{
+	  created() {
+	  	// console.log(this.$route.query.chname)
+	  	this.prchname=this.$route.query.chname;
+		
+		
+		if(this.$route.query.name){
+			this.mname=this.$route.query.name.toLowerCase()
+			
+		}else{
+			this.mname='guangdong'
+			this.prchname='广东'
+		}
+		console.log(this.mname)
+	  	require('echarts/map/js/province/'+this.mname+'.js')
+	  	this.getepidata("currentConfirmedCount",this.prchname)
+	  },
    data(){
       return{
         show:true,
@@ -48,8 +67,12 @@
           {
             name:"",
             value:1
-        }]
+        }],
+		prchname:'',
+		mname:'guangdong',
+		
         }
+		
     },
     methods:{
       mapEchartsInit(){
@@ -57,10 +80,16 @@
           myChart.setOption(mapdata, true);
       },
       onproswitch(a,b){
-           this.getepidata(a);
+           this.getepidata(a,this.prchname);
               // console.log(a,b)
       },
-      getepidata(info) {
+      getepidata(info,sfname) {
+		  
+		  if(!sfname){
+			  sfname='广东'
+		  }
+		  console.log(sfname)
+		  // console.log(sfname)
         this.axios({
           url: 'http://api.tianapi.com/txapi/ncovcity/index',
           method: 'GET',
@@ -68,25 +97,39 @@
             key: '7e83a892f6a95b46d88ba6c7ffc242b1'
           }
         }).then(res => {
+			let sf=''
           if (res.data.code == 200) {
+			  // console.log(res.data.newslist)
+			  let newslist=res.data.newslist
+			  for(let i in newslist){
+				  if(newslist[i].provinceShortName==sfname){
+					  sf=newslist[i]
+					  // console.log(newslist[i])
+					  window.citydatas=sf
+				  }
+			  }
+			  
              this.show=false
              let citydata=[];  //侧边栏数据
              let data=[]  //广东省 数据
-             for(let i in res.data.newslist[8].cities){
+             for(let i in sf.cities){
              let cityobj={}
              //--------------------------------------------
-             cityobj.城市名=res.data.newslist[8].cities[i].cityName;
-             cityobj.确诊数=res.data.newslist[8].cities[i][info];
-             cityobj.死亡数=res.data.newslist[8].cities[i].deadCount;
+             cityobj.城市名=sf.cities[i].cityName;
+             cityobj.确诊数=sf.cities[i][info];
+             cityobj.死亡数=sf.cities[i].deadCount;
 
              citydata.push(cityobj)
              // ------------------------------------------
              let obj={}
-             obj.name=res.data.newslist[8].cities[i].cityName+'市'
-             obj.value=res.data.newslist[8].cities[i][info]
+             obj.name=sf.cities[i].cityName+'市'
+             obj.value=sf.cities[i][info]
              data.push(obj);
              // ------------------------------------------
              }
+			 // console.log(data)
+			 mapdata.series[0].name=this.prchname+'省疫情-累计确诊'
+			 mapdata.series[0].mapType=this.prchname
             mapdata.series[0].data=data
             this.provinceitems=citydata
             this.mapEchartsInit();
@@ -96,8 +139,10 @@
       }
     },
       mounted() {
-          this.getepidata("currentConfirmedCount")
-      }
+		  // console.log(this.prchname)
+          
+      },
+			
   }
 
 </script>
