@@ -164,7 +164,7 @@ export default {
         }
 
         let ping=py.chineseToPinYin(data)
-        
+			this.active=this.searchindex=2
 				this.$router.push({
 					name:'Province',
 					query:{
