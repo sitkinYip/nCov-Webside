@@ -83,7 +83,7 @@
            this.getepidata(a,this.prchname);
               // console.log(a,b)
       },
-      getepidata(info,sfname) {
+      async getepidata(info,sfname) {
 		  
 		  if(!sfname){
 			  sfname='广东'

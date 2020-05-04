@@ -48,7 +48,7 @@ export default{
           let myChart = this.$echarts.init(this.$refs.myChart);
           myChart.setOption(mapdata, true);
       },
-      getcontinentdata(){
+      async getcontinentdata(){
           this.axios({
             url:"http://api.tianapi.com/txapi/ncovcity/index",
             method: 'GET',

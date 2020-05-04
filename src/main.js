@@ -63,7 +63,11 @@ Vue.use(VueAxios, axios)
 //配置vue-axios 的 post请求头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
-
+import Router from 'vue-router'
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
 
 Vue.config.productionTip = false
 

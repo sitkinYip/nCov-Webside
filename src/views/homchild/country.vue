@@ -57,7 +57,7 @@
           myChart.setOption(mapdata, true);
       },
       //请求API数据
-      getepidata(info) {
+      async getepidata(info) {
         this.axios({
           url: 'http://api.tianapi.com/txapi/ncovcity/index',
           method: 'GET',

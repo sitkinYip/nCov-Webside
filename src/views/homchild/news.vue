@@ -117,7 +117,7 @@
       onSlideEnd(slide) {
         this.sliding = false
       },
-      getNewsdata(){
+      async getNewsdata(){
           this.axios({
               url: 'http://api.tianapi.com/txapi/ncov/index',
               method: 'GET',
