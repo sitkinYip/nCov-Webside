@@ -46,7 +46,7 @@
 			this.mname='guangdong'
 			this.prchname='广东'
 		}
-		console.log(this.mname)
+		// console.log(this.mname)
 	  	require('echarts/map/js/province/'+this.mname+'.js')
 	  	this.getepidata("currentConfirmedCount",this.prchname)
 	  },
@@ -88,7 +88,7 @@
 		  if(!sfname){
 			  sfname='广东'
 		  }
-		  console.log(sfname)
+		  // console.log(sfname)
 		  // console.log(sfname)
         this.axios({
           url: 'http://api.tianapi.com/txapi/ncovcity/index',
@@ -129,6 +129,10 @@
              }
 			 // console.log(data)
 			 mapdata.series[0].name=this.prchname+'省疫情-累计确诊'
+			 if(info=='currentConfirmedCount'){
+				 mapdata.series[0].name=this.prchname+'省疫情-目前确诊'
+			 }
+			 
 			 mapdata.series[0].mapType=this.prchname
             mapdata.series[0].data=data
             this.provinceitems=citydata

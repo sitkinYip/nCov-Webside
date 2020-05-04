@@ -69,7 +69,7 @@ export default{
                     }
                     this.countryitems=Tabledata
 
-                    console.log(res.data)
+                    // console.log(res.data)
 
                 }
             })

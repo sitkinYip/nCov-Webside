@@ -138,7 +138,7 @@ export default {
       }else{
 		  this.searcgshow=false
 	  }
-	  console.log(this.searcgshow)
+	  // console.log(this.searcgshow)
       if(this.rounames==rou){
         return
       }
@@ -156,7 +156,7 @@ export default {
     // }
     onsearch(){
 		this.active=this.searchindex
-		console.log(this.searchindex)
+		// console.log(this.searchindex)
       if(this.searchindex==1){
         let data=this.search
         if(this.search.charAt(this.search.length-1)=='省'){
@@ -184,11 +184,11 @@ export default {
 		  if(this.search.charAt(this.search.length-1)=='市'){
 			  se=this.search.substr(0,this.search.length-1)
 		  }
-		  console.log(se)
+		  // console.log(se)
 		  for(let i=0;i<data.length;i++){
 		  	// console.log(data[i])
 		  	if(data[i].cityName==se){
-		  		console.log(data[i])
+		  		// console.log(data[i])
 				this.citydata[0].累计确诊=data[i].confirmedCount
 				this.citydata[0].已治愈==data[i].curedCount
 				this.citydata[0].当前确诊计数=data[i].currentConfirmedCount
