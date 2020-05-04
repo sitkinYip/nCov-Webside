@@ -165,6 +165,7 @@ export default {
 
         let ping=py.chineseToPinYin(data)
 			this.active=this.searchindex=2
+			this.seacon=this.navdata[2].search
 				this.$router.push({
 					name:'Province',
 					query:{
@@ -172,7 +173,7 @@ export default {
 						chname:data
 					}
 				})
-
+				this.search=''
         return
       }
 	   if(this.active==2){
@@ -196,6 +197,7 @@ export default {
 		  }
 		  // console.log(yhis.citydata)
 		  this.modalShow=true
+			this.search=''
 	  }
 	  
 	 
